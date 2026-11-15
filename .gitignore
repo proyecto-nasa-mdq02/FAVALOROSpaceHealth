@@ -21,5 +21,8 @@ pnpm-debug.log*
 coverage/
 *.tsbuildinfo
 test-file.txt
+
+
+# Ignore test static file
 frontend/test-static.html
-frontend/pulsovital-monitor/
+
