@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ASTRO-MED HUD | NASA Space Apps CDSS</title>
+    <link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+    <!-- APLICACIÓN PRINCIPAL (HUD) -->
+    <main id="vista-hud">
+        <!-- BARRA SUPERIOR DE TELEMETRÍA Y CONTEXTO -->
+        <header class="barra-superior">
+            <div class="bloque-marca">
+                <span class="punto-vivo"></span>
+                <div>
+                    <strong>ASTRO-MED HUD v1.0</strong>
+                    <small id="lbl-operador">Monitoreo local</small>
+                </div>
+            </div>
+
+            <div class="selector-contexto">
+                <label>Tripulante Monitoreado:</label>
+                <select id="select-tripulante" onchange="cambiarTripulanteActivo()"></select>
+
+                <label>Entorno Operativo (5 Peligros):</label>
+                <select id="select-entorno" onchange="actualizarInfoEntorno()">
+                    <option value="Transito Espacial (0G)">Tránsito Espacial (0G / Alta Radiación)</option>
+                    <option value="Estacion Espacial">Estación Espacial (Microgravedad)</option>
+                    <option value="Rover Explorador">Rover Explorador (Confinamiento Extremo)</option>
+                    <option value="Base Planetaria">Base Planetaria (Luna / Marte EVA)</option>
+                </select>
+            </div>
+
+            <div class="gamificacion-box">
+                <span class="icono-racha">🔥</span>
+                <div>
+                    <small>RACHA VITAL</small>
+                    <strong id="lbl-racha">0 Días Sol</strong>
+                </div>
+            </div>
+        </header>
+
+        <!-- GRILLA PRINCIPAL DEL HUD (3 COLUMNAS) -->
+        <div class="grilla-hud">
+            <!-- COLUMNA 1: GEMELO DIGITAL ANATÓMICO INTERACTIVO (SVG) -->
+            <section class="panel panel-anatomico">
+                <div class="cabecera-panel">
+                    <h2>GEMELO DIGITAL ANATÓMICO</h2>
+                    <span id="badge-global" class="badge nominal">NOMINAL</span>
+                </div>
+                <p class="instruccion-ui">Hacé clic en cada zona del cuerpo para inspeccionar función, impacto espacial y diagnóstico.</p>
+
+                <div class="contenedor-svg">
+                    <svg id="svg-humano" viewBox="0 0 260 520" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Silueta Base de Referencia -->
+                        <g stroke="#1e293b" stroke-width="2" fill="none">
+                            <circle cx="130" cy="52" r="36" />
+                            <rect x="82" y="96" width="96" height="165" rx="18" />
+                        </g>
+
+                        <!-- ZONA 1: NEURO_PSICO (Cabeza y Sistema Nervioso) -->
+                        <g id="zona-NEURO_PSICO" class="zona-clicable nominal" onclick="seleccionarSistema('NEURO_PSICO')">
+                            <circle cx="130" cy="52" r="32" />
+                            <path d="M112 45 Q130 28 148 45 Q130 62 112 45 Z" fill="rgba(255,255,255,0.25)" />
+                            <text x="130" y="56" text-anchor="middle" class="etiqueta-svg">NEURO</text>
+                        </g>
+
+                        <!-- ZONA 2: CARDIO_RAD (Tórax, Corazón y Dosimetría) -->
+                        <g id="zona-CARDIO_RAD" class="zona-clicable nominal" onclick="seleccionarSistema('CARDIO_RAD')">
+                            <path d="M88 100 H172 V182 H88 Z" rx="12" />
+                            <circle cx="142" cy="138" r="14" fill="rgba(255,255,255,0.25)" />
+                            <text x="130" y="145" text-anchor="middle" class="etiqueta-svg">CARDIO / RAD</text>
+                        </g>
+
+                        <!-- ZONA 3: METABOLICO_INMUNE (Abdomen, Glucosa y Temperatura) -->
+                        <g id="zona-METABOLICO_INMUNE" class="zona-clicable nominal" onclick="seleccionarSistema('METABOLICO_INMUNE')">
+                            <path d="M92 188 H168 V256 H92 Z" rx="10" />
+                            <text x="130" y="226" text-anchor="middle" class="etiqueta-svg">METABÓLICO</text>
+                        </g>
+
+                        <!-- ZONA 4: MUSCULO_ESQUELETICO (Brazos y Piernas) -->
+                        <g id="zona-MUSCULO_ESQUELETICO" class="zona-clicable nominal" onclick="seleccionarSistema('MUSCULO_ESQUELETICO')">
+                            <!-- Brazo Izquierdo y Derecho -->
+                            <rect x="44" y="102" width="32" height="145" rx="14" />
+                            <rect x="184" y="102" width="32" height="145" rx="14" />
+                            <!-- Pierna Izquierda y Derecha -->
+                            <rect x="92" y="266" width="34" height="210" rx="15" />
+                            <rect x="134" y="266" width="34" height="210" rx="15" />
+                            <text x="130" y="370" text-anchor="middle" class="etiqueta-svg">MÚSCULO / ÓSEO</text>
+                        </g>
+                    </svg>
+                </div>
+
+                <!-- DETALLE DE LA ZONA CLICADA -->
+                <div id="caja-detalle-organo" class="detalle-organo">
+                    <h3 id="titulo-organo">Sistema Seleccionado: Vista General</h3>
+                    <p id="desc-organo">Seleccioná una región anatómica en el modelo interactivo para visualizar cómo le afectan los peligros del vuelo espacial y su estado actual.</p>
+                </div>
+            </section>
+
+            <!-- COLUMNA 2: TRIAGE AUTÓNOMO, PROTOCOLO GUIADO Y GRÁFICOS -->
+            <section class="panel panel-central">
+                <!-- ALERTA Y PROTOCOLO PASO A PASO (TARJETAS 2 Y 4 TRELLO) -->
+                <div id="panel-protocolo" class="bloque-triage nominal">
+                    <div class="cabecera-triage">
+                        <strong id="triage-titulo">DIAGNÓSTICO AUTÓNOMO DE MISIÓN</strong>
+                        <span id="triage-tierra" class="tag-tierra">Autonomía Local OK</span>
+                    </div>
+                    <p id="triage-resumen">Cargando telemetría del tripulante...</p>
+                    <div class="instruccion-box">
+                        <strong>📋 Protocolo e Instrucciones Paso a Paso (Guía para Tripulación):</strong>
+                        <p id="triage-instruccion">Sin acciones correctivas pendientes.</p>
+                    </div>
+                </div>
+
+                <!-- TARJETAS DE INDICADORES BIOMÉTRICOS EN VIVO (TARJETA 9 TRELLO) -->
+                <div class="grilla-kpis">
+                    <div class="kpi-card">
+                        <small>Presión Arterial (MAP)</small>
+                        <strong id="kpi-presion">-- / --</strong>
+                        <span id="kpi-map">Media: -- mmHg</span>
+                    </div>
+                    <div class="kpi-card">
+                        <small>Frecuencia Cardíaca</small>
+                        <strong id="kpi-fc">-- BPM</strong>
+                        <span>Rango base: 60-95</span>
+                    </div>
+                    <div class="kpi-card">
+                        <small>Glucosa en Sangre</small>
+                        <strong id="kpi-glucosa">-- mg/dL</strong>
+                        <span>Rango: 75-140 mg/dL</span>
+                    </div>
+                    <div class="kpi-card">
+                        <small>Temperatura / Radiación</small>
+                        <strong id="kpi-temp">-- °C</strong>
+                        <span id="kpi-rad">Rad: -- mSv</span>
+                    </div>
+                    <div class="kpi-card">
+                        <small>Sueño / Estado Ánimo</small>
+                        <strong id="kpi-sueno">-- hs</strong>
+                        <span id="kpi-animo">Ánimo: -- / 5</span>
+                    </div>
+                    <div class="kpi-card">
+                        <small>Ejercicio Contramedida</small>
+                        <strong id="kpi-ejercicio">-- min</strong>
+                        <span id="kpi-evidencia">Evidencia: S/D</span>
+                    </div>
+                </div>
+
+                <!-- GRÁFICO DINÁMICO HISTÓRICO EN CANVAS (TARJETA 6 TRELLO) -->
+                <div class="bloque-grafico">
+                    <div class="cabecera-panel">
+                        <h3>EVOLUCIÓN TEMPORAL DE INDICADORES (15 DÍAS SOL)</h3>
+                        <select id="select-metrica-grafico" onchange="dibujarGraficoEvolucion()">
+                            <option value="frecuencia_cardiaca">Frecuencia Cardíaca (BPM) & Presión Sistólica</option>
+                            <option value="glucosa_mg_dl">Glucosa en Sangre (mg/dL)</option>
+                            <option value="horas_sueno">Horas de Sueño Diarias & Ánimo</option>
+                        </select>
+                    </div>
+                    <canvas id="canvas-evolucion" width="680" height="230"></canvas>
+                </div>
+            </section>
+
+            <!-- COLUMNA 3: ENTRADA MULTIMODAL, SIMULADOR DE CRISIS Y BOTIQUÍN -->
+            <section class="panel panel-acciones">
+                <h2>SIMULADOR DE PELIGROS NASA</h2>
+                <p class="instruccion-ui">Dispará una anomalía en vivo para evaluar la respuesta del CDSS:</p>
+                <div class="botones-crisis">
+                    <button class="btn-crisis rad" onclick="simularCrisis('TORMENTA_SOLAR')">☢️ Tormenta Solar (0G)</button>
+                    <button class="btn-crisis psy" onclick="simularCrisis('CONFINAMIENTO_ROVER')">🧠 Fatiga en Rover</button>
+                    <button class="btn-crisis met" onclick="simularCrisis('HIPOGLUCEMIA_EVA')">🩸 Hipoglucemia + Fiebre</button>
+                    <button class="btn-crisis mus" onclick="simularCrisis('ATROFIA_CERO_G')">🦴 Déficit Ejercicio 0G</button>
+                </div>
+
+                <hr class="divisor">
+
+                <h2>REGISTRAR EVALUACIÓN / ENTRADA</h2>
+                <form id="form-telemetria">
+                    <div class="fila-form">
+                        <div>
+                            <label>Sistólica (mmHg)</label>
+                            <input type="number" id="in-sistolica" value="118" required>
+                        </div>
+                        <div>
+                            <label>Diastólica (mmHg)</label>
+                            <input type="number" id="in-diastolica" value="76" required>
+                        </div>
+                    </div>
+                    <div class="fila-form">
+                        <div>
+                            <label>Pulso (BPM)</label>
+                            <input type="number" id="in-fc" value="72" required>
+                        </div>
+                        <div>
+                            <label>Glucosa (mg/dL)</label>
+                            <input type="number" step="0.1" id="in-glucosa" value="92.0" required>
+                        </div>
+                    </div>
+                    <div class="fila-form">
+                        <div>
+                            <label>Temp (°C)</label>
+                            <input type="number" step="0.1" id="in-temp" value="36.6" required>
+                        </div>
+                        <div>
+                            <label>Sueño (Horas)</label>
+                            <input type="number" step="0.5" id="in-sueno" value="7.5" required>
+                        </div>
+                    </div>
+                    <div class="fila-form">
+                        <div>
+                            <label>Ánimo (1-5)</label>
+                            <input type="number" min="1" max="5" id="in-animo" value="5" required>
+                        </div>
+                        <div>
+                            <label>Ejercicio (min)</label>
+                            <input type="number" id="in-ejercicio" value="60" required>
+                        </div>
+                    </div>
+                    <div class="fila-form">
+                        <div>
+                            <label>Radiación (mSv)</label>
+                            <input type="number" step="0.1" id="in-rad" value="0.2" required>
+                        </div>
+                        <div>
+                            <label>Captura / Ultrasonido</label>
+                            <select id="in-evidencia">
+                                <option value="S/D">Sin captura adjunta</option>
+                                <option value="eco_ocular_nervio_optico.png">Ultrasonido Ocular (SANS)</option>
+                                <option value="eco_cardiaco_4camaras.png">Ecografía Cardíaca 0G</option>
+                                <option value="captura_camara_pupila.jpg">Cámara: Reflejo Pupilar</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <label>Aplicar Insumo del Botiquín (Opcional):</label>
+                    <div class="fila-form">
+                        <select id="in-insumo">
+                            <option value="">-- Ninguno --</option>
+                        </select>
+                        <input type="number" step="1" id="in-cant-insumo" value="0" min="0" placeholder="Cant.">
+                    </div>
+
+                    <button type="submit" class="btn-primario">REGISTRAR Y EJECUTAR TRIAGE</button>
+                </form>
+
+                <hr class="divisor">
+                <h3>📦 STOCK BOTIQUÍN A BORDO</h3>
+                <ul id="lista-botiquin" class="lista-botiquin"></ul>
+            </section>
+        </div>
+    </main>
+
+    <script src="app_web.js"></script>
+</body>
+</html>

@@ -1,0 +1,24 @@
+# =======================================================================================================
+#  MANIFIESTO DE DEPENDENCIAS — 
+# =======================================================================================================
+#  NOTA DE INGENIERÍA: Stack 100% Offline-First sin cotas rígidas de versión para garantizar instalación 
+#  inmediata mediante binarios precompilados (wheels) en cualquier máquina del equipo de desarrollo.
+# =======================================================================================================
+
+# 1. SEGURIDAD Y AUTENTICACIÓN DE TRIPULACIÓN (CAPA DE INFRAESTRUCTURA).
+bcrypt
+
+# 2. SERVIDOR BACKEND LOCAL Y CONTRATOS API REST (CAPA DE INFRAESTRUCTURA).
+fastapi
+uvicorn
+
+# 3. COMUNICACIÓN CLIENTE-SERVIDOR Y CONSOLA MÉDICA DE ESCRITORIO (CAPA DE PRESENTACIÓN).
+requests
+matplotlib
+
+# 4. PROCESAMIENTO DE SERIES TEMPORALES BIOMÉTRICAS (CAPA DE INFRAESTRUCTURA / ANALÍTICA).
+pandas
+
+# 5. CALIDAD DE SOFTWARE Y AUTOMATIZACIÓN DE PRUEBAS (METODOLOGÍA TDD).
+pytest
+httpx
