@@ -67,10 +67,7 @@ This project implements NASA **Spaceflight Standard Measures** - a set of core m
 ### Tech Stack
 
 #### Frontend
-- **Framework**: HTML5 pure + JavaScript fetch API + Custom CSS (no build tools, no node_modules)
-- **Mocking**: Mock data in `frontend/app.js` for parallel development
-- **UI Components**: Custom CSS + Dynamic canvas charts
-- **Visualization**: Native Canvas replacement for Recharts + Interactive SVG for digital twin
+
 
 #### Backend
 - **Framework**: FastAPI (Python 3.11+)
@@ -177,84 +174,19 @@ src/
 - **YELLOW (Caution)**: Early drift detected; preventive actions recommended.
 - **RED (Critical)**: Deterministic alert triggered; requires crew action and Flight Surgeon notification.
 
----
-
-## 8. Frontend HTML Screens (Migrated to HTML/CSS/JS Pure)
-
-The frontend was migrated from the previous React/Next.js/Tailwind stack to pure **HTML5 + CSS + JavaScript vanilla** (no build tools, no `node_modules`, no framework). All screens live under `frontend/` and can be opened directly in a browser or served statically.
-
-### Screen Order (Navigation)
 
 
-| Screen | File | Purpose |
-|--------|------|---------|
-| **Hoy / Dashboard** | `index.html` | Main entry: crew context, vitals highlights, clinical summary, daily sample summary, plan teaser |
-| **Trends** | `trends.html` | Vital sign trends over time (3h/6h), metric picker, canvas chart |
-| **Plan** | `plan.html` | Wellbeing plan: daily tasks, points wallet, progress bar, rewards medals |
-| **Measures** | `measures.html` | Standard measures: sleep, cognition, behavioral health, sensorimotor |
-| **Mirror** | `mirror.html` | Smart mirror: facial edema, paleness colorimetry, ocular fatigue, capture quality gate |
-| **Admin** | `admin.html` | Supervisor workspace: monitor, summary, trends, measures, alerts sections |
-
-### How to Run the Static Frontend
-
-The project is pure HTML/CSS/JS — no installation or build step required.
-
-**Option A — Python (recommended, fastest):**
-```powershell
-cd "C:\Users\User\FAVALOROSpaceHealth\frontend"
-python -m http.server 8000
-```
-Then open: `http://localhost:8000`
-
-**Option B — Node.js (npx):**
-```powershell
-cd "C:\Users\User\FAVALOROSpaceHealth\frontend"
-npx serve
-# or
-npx http-server
 ```
 
 **Option C — VS Code Live Server:**
 Install the **Live Server** extension, right-click `index.html`, and select *"Open with Live Server"*.
 
 ### Tech Stack (Current)
-- **Frontend**: HTML5 + CSS3 + JavaScript vanilla (Fetch API, Canvas charts, SVG icons)
+- **Frontend**: 
 - **Icons**: Google Material Symbols Rounded
 - **Fonts**: Manrope + Space Grotesk (Google Fonts)
 - **Mock data**: Embedded in `frontend/app.js` for offline development
 - **Backend**: FastAPI (Python), SQLite, SQLAlchemy — connects via `fetch` to `http://localhost:8000/api`
 
----
 
-## 9. Estado Actual del Proyecto (Hasta Acá) y Cómo Abrir el Frontend Hoy
 
-### Cómo abrir el frontend HOY (Admin Panel - React/Next.js + Tailwind):
-
-```powershell
-# Terminal 1 - Backend FastAPI (puerto 8000)
-cd "C:\Users\Jazmín\Downloads\FAVALOROSpaceHealth"
-python -m uvicorn backend.api.servidor:app --reload --port 8000
-
-# Terminal 2 - Frontend Admin (puerto 3001)
-cd "C:\Users\Jazmín\Downloads\FAVALOROSpaceHealth\frontend"
-npm run dev
-
-# Luego abrir en el navegador:
-http://localhost:3001/admin
-```
-
-### Estado actual de la integración (hasta acá):
-
-- **Backend**: FastAPI corriendo en puerto 8000 (`/api/tripulantes`, `/api/telemetria/tripulante/{id}`, `/api/analitica/{id}`, `/api/botiquin`).
-- **Frontend Admin**: Next.js + React + Tailwind (frontend/src/) en puerto 3001. El proxy `/api` → `http://localhost:8000/api` está configurado en `frontend/next.config.js`.
-- **VitalSignsPanel**: Migrado desde `pulsovital-monitor/src/components/VitalSignsPanel.tsx` al `frontend/src/components/vitals/VitalSignsPanel.tsx` (correcciones de runtime aplicadas: banda blanca, barras animadas, colores de estado, fallback seguro en `VerticalGraduatedScale`).
-- **InteractiveChartsPanel**: Restaurado con gráfico SVG interactivo (rejilla, banda de rango objetivo, línea óptima, área, crosshair, estadísticas de ventana).
-- **Vínculo anatómico**: al seleccionar un signo vital (tarjeta de signos vitales o pestaña del gráfico), la estructura anatómica correspondiente se selecciona automáticamente (corazón ↔ FC, arteria ↔ PA, vena ↔ glucosa, capilar ↔ temperatura).
-
-### Troubleshooting rapido:
-
-- **Error `Failed to fetch`**: backend FastAPI no corriendo en puerto 8000.
-- **Error runtime en vitals**: fallback seguro aplicado, no debe romper con reglas faltantes.
-
-#   F A V A L O R O S p a c e H e a l t h  
- 
