@@ -25,4 +25,4 @@ test-file.txt
 
 # Ignore test static file
 frontend/test-static.html
-
+frontend/node_modules
