@@ -5,6 +5,7 @@ import { CrewShell } from "@/components/CrewShell";
 import { VitalAttentionBanner } from "@/components/alerts/VitalAttentionBanner";
 import { AnatomyMapPanel } from "@/components/vitals/AnatomyMapPanel";
 import { StatusGuide } from "@/components/StatusGuide";
+import { DailySampleSummary } from "@/components/alerts/DailySampleSummary";
 import { useLanguage } from "@/components/LanguageProvider";
 import { VitalsGrid } from "@/components/vitals/VitalsGrid";
 import { InteractiveChartsPanel } from "@/components/vitals/InteractiveChartsPanel";
@@ -55,7 +56,8 @@ export default function VitalsPage() {
         selectedRegion={selectedRegion}
         onSelectRegion={handleRegionSelect}
       />
-      <div className="mt-12">
+      <DailySampleSummary trends={MOCK_TRENDS} />
+      <div className="mt-8">
         <InteractiveChartsPanel
           trends={MOCK_TRENDS}
           selectedMetric={selectedMetric}

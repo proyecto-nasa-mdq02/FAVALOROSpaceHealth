@@ -71,3 +71,7 @@ def raiz():
 
 app.include_router(router_tripulacion)
 app.include_router(router_telemetria)
+
+@app.get("/health")
+async def health_check():
+    return {"status": "ok"}

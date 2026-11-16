@@ -21,7 +21,7 @@ pnpm-debug.log*
 coverage/
 *.tsbuildinfo
 test-file.txt
-
+.astro_med.db
 
 # Ignore test static file
 frontend/test-static.html
