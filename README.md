@@ -70,6 +70,12 @@ Aligned with **NASA Spaceflight Standard Measures** and **HRP 5 Spaceflight Haza
 
 ---
 
+## Related Repositories & Experimental Modules
+
+- 🔗 **ASTRO_MED_HUD_V2**: [https://github.com/proyecto-nasa-mdq02/ASTRO_MED_HUD_V2](https://github.com/proyecto-nasa-mdq02/ASTRO_MED_HUD_V2)  
+  *Experimental Head-Up Display (HUD) & visual telemetry interface developed by team members during the hackathon. Retained for future integration into the main FAVALORO SpaceHealth platform.*
+
+---
 
 
 ## Development Notes
